@@ -1,0 +1,117 @@
+
+.main-container {
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.sub-container {
+    width: 25%;
+    text-align: center;
+    border: 1px solid brown;
+    border-radius: 5px;
+    height: 35px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.active-tab {
+  background: #04AA6D;
+  color: white;
+  border: 0px;
+}
+
+.stock_container2 {
+    margin-top: 30px;
+    margin-left: 20px;
+}
+
+.stock_table {
+  width: 100%;
+}
+
+.stock_table th {
+  background: #ffffff;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  /* letter-spacing: 1px; */
+  color: #1d366d;
+  border-bottom: 4px solid rgba(0, 0, 0, 0.1);
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.stock_table td {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  border-top: 0.1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 3px solid rgba(4, 0, 0, 0.1);
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background: #ffffff;
+}
+
+#month {
+  min-width: 100px;
+}
+
+#year {
+  min-width: 60px;
+}
+
+.profite {
+  color: #0aaa04;  
+  font-weight: 700;
+}
+
+.loss {
+  color: red;  
+}
+
+@media screen and (max-width: 715px) {
+    .subdiv {
+        margin-left: 10px;
+    }
+    .stock_table {
+      width: 100%;
+    }
+    
+    #month {
+      min-width: 80px;
+    }
+
+    #year {
+      min-width: 40px;
+    }
+}
+  
+@media screen and (max-width: 610px) {
+    .inputdiv {
+      font-size: 12px;
+    }
+    .stock_table {
+      font-size: 14px;
+      width: 100%;
+    }
+}
+
+@media screen and (max-width: 458px) {
+    .maindiv {
+      display: flex;
+      flex-direction: column;
+    }
+    .inputdiv {
+      font-size: 12px;
+      margin-top: 10px;
+    }
+    .stock_table {
+      font-size: 12px;
+      width: 100%;
+    }
+}
+  
