@@ -22,12 +22,12 @@ export class AuthModuleService {
     observe: 'body' as 'response',
   };
 
-  encrypt = (text: any) => {
-    const secrateKey = environment.DECRYPT;
-    const cryptr = new Cryptr(secrateKey);
-    const encryptedString = cryptr.encrypt(text);
-    return encryptedString;
-  }; 
+  // encrypt = (text: any) => {
+  //   const secrateKey = environment.DECRYPT;
+  //   const cryptr = new Cryptr(secrateKey);
+  //   const encryptedString = cryptr.encrypt(text);
+  //   return encryptedString;
+  // }; 
   
   // encrypt = (text: any) => {
   //   const secrateKey = environment.DECRYPT;
