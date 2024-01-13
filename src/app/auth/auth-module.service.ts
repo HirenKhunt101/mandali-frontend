@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import CryptoJS from "crypto-js";
-import Cryptr from 'cryptr';
+// import CryptoJS from "crypto-js";
+// import Cryptr from 'cryptr';
 
 @Injectable({
   providedIn: 'root',
