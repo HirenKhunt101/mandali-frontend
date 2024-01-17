@@ -143,7 +143,8 @@ export class DashboardComponent {
   }
 
   copyToClipboard() {
-    navigator.clipboard.writeText(this.UserForm.get('Password')?.value);    
+    navigator.clipboard.writeText(this.UserForm.get('Password')?.value);   
+    this.openErrorMsg("Password copied"); 
   }
   
   openErrorMsg(str: any) {
