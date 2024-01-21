@@ -56,14 +56,9 @@
                 type="date"
                 class="form-control date"
                 style="font-weight: 400"
+                formControlName="Date"
                 value="{{ StockForm.controls['Date'].value }}"
               />
-              <!-- <p class="error" *ngIf="
-                        StockForm.controls['Date'].value.invalid &&
-                        StockForm.controls['Date'].value.touched
-                        ">
-                        Please enter valid date!
-                    </p> -->
             </div>
           </div>
           <div class="col">
@@ -91,15 +86,16 @@
                 type="radio"
                 value="NSE"
                 formControlName="Exchange"
+                (change)="updateTotal()"
                 required
               />
-
               <label style="margin-left: 6px" for="BSE">BSE</label>
               <input
                 style="margin-left: 2px"
                 type="radio"
                 value="BSE"
                 formControlName="Exchange"
+                (change)="updateTotal()"
                 required
               />
             </div>
@@ -134,14 +130,6 @@
                 style="background-color: white"
                 (input)="updateTotal()"
               />
-              <!-- <p class="error" *ngIf="
-                            CreateWalkInForm.controls.WalkInCost['controls']['Nights']
-                            .invalid &&
-                            CreateWalkInForm.controls.WalkInCost['controls']['Nights']
-                            .touched
-                        ">
-                        Please enter valid Night(s)!
-                        </p> -->
             </div>
           </div>
           <div class="col">
@@ -151,7 +139,7 @@
                 type="number"
                 class="form-control field"
                 style="background-color: white"
-                [value]="Total"
+                [value]="BuyingTotalAmount"
                 disabled
               />
             </div>
@@ -164,6 +152,117 @@
             >
               ADD
             </button>
+          </div>
+        </div>
+        <div [formGroup]="BuyChargesGroup" class="row custom_label pt-3">
+          <!-- Brokerage Block -->
+          <div class="col">
+            <div>Brokerage:</div>
+            <div>
+              <input
+                type="number"
+                class="form-control"
+                style="font-weight: 400"
+                formControlName="Brokerage"
+                value="{{ BuyChargesGroup.controls['Brokerage'].value }}"
+              />
+            </div>
+          </div>
+
+          <!-- STT Block -->
+          <div class="col">
+            <div>STT:</div>
+            <div>
+              <input
+                type="number"
+                class="form-control"
+                style="font-weight: 400"
+                value="{{ BuyChargesGroup.controls['STT'].value }}"
+              />
+            </div>
+          </div>
+
+          <!-- Stamp Duty Block -->
+          <div class="col">
+            <div>Stamp Duty:</div>
+            <div>
+              <input
+                type="number"
+                class="form-control"
+                style="font-weight: 400"
+                value="{{ BuyChargesGroup.controls['StampDuty'].value }}"
+              />
+            </div>
+          </div>
+
+          <!-- SEBI Charges Block -->
+          <div class="col">
+            <div>SEBI Charges:</div>
+            <div>
+              <input
+                type="number"
+                class="form-control"
+                style="font-weight: 400"
+                value="{{
+                  BuyChargesGroup.controls['SEBICharges'].value
+                    | number : '1.0-2'
+                }}"
+              />
+            </div>
+          </div>
+
+          <!-- Exchange Service Tax Block -->
+          <div class="col">
+            <div>Transaction Tax:</div>
+            <div>
+              <input
+                type="number"
+                class="form-control"
+                style="font-weight: 400"
+                value="{{
+                  BuyChargesGroup.controls['TransactionCharge'].value
+                }}"
+              />
+            </div>
+          </div>
+
+          <!-- GST Block -->
+          <div class="col">
+            <div>GST:</div>
+            <div>
+              <input
+                type="number"
+                class="form-control"
+                style="font-weight: 400"
+                value="{{ BuyChargesGroup.controls['GST'].value }}"
+              />
+            </div>
+          </div>
+
+          <!-- Turnover Tax Block -->
+          <!-- <div class="col">
+            <div>Turnover Tax:</div>
+            <div>
+              <input
+                type="number"
+                class="form-control"
+                style="font-weight: 400"
+                value="{{ BuyChargesGroup.controls['TurnoverTax'].value }}"
+              />
+            </div>
+          </div> -->
+
+          <!-- Other Charges Block -->
+          <div class="col">
+            <div>Other Charges:</div>
+            <div>
+              <input
+                type="number"
+                class="form-control"
+                style="font-weight: 400"
+                value="{{ BuyChargesGroup.controls['OtherCharges'].value }}"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -276,6 +375,7 @@
               type="number"
               formControlName="SellingPrice"
               class="form-control field"
+              (input)="selling_update_charges()"
             />
           </div>
         </td>
@@ -291,21 +391,130 @@
               type="number"
               formControlName="SellingQuantity"
               class="form-control field"
+              (input)="selling_update_charges()"
             />
           </div>
         </td>
       </tr>
       <tr>
         <td>
-          <div class="mt-2">Selling Charge:</div>
+          <div class="mt-2">Selling Amount:</div>
         </td>
         <td>
           <div class="d-flex">
             <input
               #b
               type="number"
-              formControlName="SellingCharge"
+              [value]="SellingTotalAmount"
               class="form-control field"
+              readonly
+            />
+          </div>
+        </td>
+      </tr>
+      <!-- Brokerage Row -->
+      <tr [formGroup]="SellChargesGroup">
+        <td>
+          <div class="mt-2">Brokerage:</div>
+        </td>
+        <td>
+          <div class="d-flex">
+            <input
+              #b
+              type="number"
+              formControlName="Brokerage"
+              class="form-control field"
+              value="{{ SellChargesGroup.controls['Brokerage'].value }}"
+            />
+          </div>
+        </td>
+      </tr>
+
+      <!-- STT Row -->
+      <tr [formGroup]="SellChargesGroup">
+        <td>
+          <div class="mt-2">STT:</div>
+        </td>
+        <td>
+          <div class="d-flex">
+            <input
+              #stt
+              type="number"
+              formControlName="STT"
+              class="form-control field"
+              value="{{ SellChargesGroup.controls['STT'].value }}"
+            />
+          </div>
+        </td>
+      </tr>
+
+      <!-- SEBI Charges Row -->
+      <tr [formGroup]="SellChargesGroup">
+        <td>
+          <div class="mt-2">SEBI Charges:</div>
+        </td>
+        <td>
+          <div class="d-flex">
+            <input
+              #sebi
+              type="number"
+              formControlName="SEBICharges"
+              class="form-control field"
+              value="{{ SellChargesGroup.controls['SEBICharges'].value }}"
+            />
+          </div>
+        </td>
+      </tr>
+
+      <!-- Transaction Charge Row -->
+      <tr [formGroup]="SellChargesGroup">
+        <td>
+          <div class="mt-2">Transaction Charge:</div>
+        </td>
+        <td>
+          <div class="d-flex">
+            <input
+              #transactionCharge
+              type="number"
+              formControlName="TransactionCharge"
+              class="form-control field"
+              value="{{ SellChargesGroup.controls['TransactionCharge'].value }}"
+            />
+          </div>
+        </td>
+      </tr>
+
+      <!-- Other Charge Row -->
+      <tr [formGroup]="SellChargesGroup">
+        <td>
+          <div class="mt-2">Other Charge:</div>
+        </td>
+        <td>
+          <div class="d-flex">
+            <input
+              #transactionCharge
+              type="number"
+              formControlName="OtherCharges"
+              class="form-control field"
+              value="{{ SellChargesGroup.controls['OtherCharges'].value }}"
+            />
+          </div>
+        </td>
+      </tr>
+
+      <!-- GST Row -->
+      <tr [formGroup]="SellChargesGroup">
+        <td>
+          <div class="mt-2">GST:</div>
+        </td>
+        <td>
+          <div class="d-flex">
+            <input
+              #gst
+              type="number"
+              formControlName="GST"
+              class="form-control field"
+              value="{{ SellChargesGroup.controls['GST'].value }}"
             />
           </div>
         </td>
@@ -398,6 +607,7 @@
               type="number"
               formControlName="Amount"
               class="form-control field"
+              readonly
             />
           </div>
         </td>
@@ -412,6 +622,7 @@
               type="number"
               formControlName="Quantity"
               class="form-control field"
+              readonly
             />
           </div>
         </td>
