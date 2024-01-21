@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { UserData } from '../../UserData/userdata';
 import { AdminModuleService } from '../admin-portal.service';
 import { StockList } from '../../static-data/static'
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-holding',
@@ -21,10 +22,13 @@ export class HoldingComponent {
   @ViewChild('ConfirmationModal', { static: true }) ConfirmationModal !: ElementRef;
 
   StockForm !: FormGroup;
+  BuyChargesGroup !: FormGroup;
+  SellChargesGroup !: FormGroup;
   UserData: any;
   Today !: string;
   StocksList : any;
-  Total = 0;
+  BuyingTotalAmount = 0;
+  SellingTotalAmount = 0;
   PortFolio: any;
   ActiveTab = "stock_tab";
   SellHoldingForm !: FormGroup;
@@ -50,6 +54,27 @@ export class HoldingComponent {
     this.UserData = new UserData().getData('userdata');
     this.UserType = this.UserData.user.UserType;
 
+    this.BuyChargesGroup = new FormGroup({
+      Brokerage: new FormControl(0, [Validators.required, Validators.min(0)]),
+      GST: new FormControl(0, [Validators.required, Validators.min(0)]),
+      TransactionCharge: new FormControl(0, [Validators.required, Validators.min(0)]),
+      // TurnoverTax: new FormControl(0, [Validators.required, Validators.min(0)]),
+      SEBICharges: new FormControl(0, [Validators.required, Validators.min(0)]),
+      StampDuty: new FormControl(0, [Validators.required, Validators.min(0)]),
+      STT: new FormControl(0, [Validators.required, Validators.min(0)]),
+      OtherCharges: new FormControl(0, [Validators.required, Validators.min(0)]),
+    });
+
+    this.SellChargesGroup = new FormGroup({
+      Brokerage: new FormControl(0, [Validators.required, Validators.min(0)]),
+      GST: new FormControl(0, [Validators.required, Validators.min(0)]),
+      TransactionCharge: new FormControl(0, [Validators.required, Validators.min(0)]),
+      // TurnoverTax: new FormControl(0, [Validators.required, Validators.min(0)]),
+      SEBICharges: new FormControl(0, [Validators.required, Validators.min(0)]),
+      STT: new FormControl(0, [Validators.required, Validators.min(0)]),
+      OtherCharges: new FormControl(0, [Validators.required, Validators.min(0)]),
+    });
+
     this.StockForm = new FormGroup({
       Date: new FormControl(this.Today, Validators.required),
       StockIndex: new FormControl('', [Validators.required]),
@@ -59,16 +84,19 @@ export class HoldingComponent {
       Quantity: new FormControl(1, [Validators.required, Validators.min(1)]),
       Exchange: new FormControl('NSE', [Validators.required]),
       MandaliId: new FormControl(this.UserData.user.MandaliId),
+      Charges: this.BuyChargesGroup
     });
 
     this.SellHoldingForm = new FormGroup({
       StockName: new FormControl('', Validators.required),
       Symbol: new FormControl('', Validators.required),
+      Exchange: new FormControl('', Validators.required),
       SellingPrice: new FormControl(0, Validators.required),
       ExistQuantity: new FormControl(0),
       SellingQuantity: new FormControl(1, Validators.required),
       MandaliId: new FormControl(this.UserData.user.MandaliId),
       SellingCharge: new FormControl(0, Validators.required),
+      Charges: this.SellChargesGroup
     });
 
     this.updateTotal();
@@ -130,7 +158,50 @@ export class HoldingComponent {
   updateTotal() {
     const amount = this.StockForm.get('Amount')?.value;
     const quantity = this.StockForm.get('Quantity')?.value;
-    this.Total =  amount * quantity;
+    this.BuyingTotalAmount =  amount * quantity;
+
+    this.BuyChargesGroup.get('Brokerage')?.setValue(environment.BROKERAGE_CHARGE);
+    this.BuyChargesGroup.get('STT')?.setValue(this.BuyingTotalAmount * environment.STT_CHARGE_PERCENTAGE);
+    this.BuyChargesGroup.get('StampDuty')?.setValue(this.BuyingTotalAmount * environment.STAMP_DUTY_CHARGE_PERCENTAGE);
+    this.BuyChargesGroup.get('SEBICharges')?.setValue(this.BuyingTotalAmount * environment.SEBI_CHARGES_PERCENTAGE);
+
+    console.log(this.StockForm.value);
+    
+    if (this.StockForm.get('Exchange')?.value == 'NSE') {
+      this.BuyChargesGroup.get('TransactionCharge')?.setValue(this.BuyingTotalAmount * environment.NSE_TRANSACTION_CHARGE_PERCENTAGE);
+    } else {
+      this.BuyChargesGroup.get('TransactionCharge')?.setValue(this.BuyingTotalAmount * environment.BSE_TRANSACTION_CHARGE_PERCENTAGE);
+    }
+
+    this.BuyChargesGroup.get('GST')?.setValue(this.calculate_GST_charge(this.BuyChargesGroup));
+  }
+  
+  selling_update_charges() {
+    const amount = this.SellHoldingForm.get('SellingPrice')?.value;
+    const quantity = this.SellHoldingForm.get('SellingQuantity')?.value;
+    this.SellingTotalAmount =  amount * quantity;
+
+    this.SellChargesGroup.get('Brokerage')?.setValue(environment.BROKERAGE_CHARGE);
+    this.SellChargesGroup.get('STT')?.setValue(this.SellingTotalAmount * environment.STT_CHARGE_PERCENTAGE);
+    this.SellChargesGroup.get('SEBICharges')?.setValue(this.SellingTotalAmount * environment.SEBI_CHARGES_PERCENTAGE);
+
+    // Uncomment if needed
+    // this.SellChargesGroup.get('TurnoverTax')?.setValue(this.SellingTotalAmount * environment.TURNOVER_TAX_CHARGE_PERCENTAGE);
+
+    if (this.SellHoldingForm.get('Exchange')?.value == 'NSE') {
+      this.SellChargesGroup.get('TransactionCharge')?.setValue(this.SellingTotalAmount * environment.NSE_TRANSACTION_CHARGE_PERCENTAGE);
+    } else {
+      this.SellChargesGroup.get('TransactionCharge')?.setValue(this.SellingTotalAmount * environment.BSE_TRANSACTION_CHARGE_PERCENTAGE);
+    }
+
+    this.SellChargesGroup.get('GST')?.setValue(this.calculate_GST_charge(this.SellChargesGroup));
+  }
+
+  calculate_GST_charge(CurrentForm: FormGroup) {
+    return ( CurrentForm.get('Brokerage')?.value + 
+             CurrentForm.get('SEBICharges')?.value + 
+             CurrentForm.get('TransactionCharge')?.value
+           ) * environment.GST_RATE;
   }
 
   buy_stock() {   
@@ -179,6 +250,8 @@ export class HoldingComponent {
     this.SellHoldingForm.get('StockName')?.setValue(item.StockName);
     this.SellHoldingForm.get('Symbol')?.setValue(item.Symbol);
     this.SellHoldingForm.get('ExistQuantity')?.setValue(item.Quantity);
+    this.SellHoldingForm.get('Exchange')?.setValue(item.Exchange);
+    
     if(this.UserType == 'admin') {
       this._ModalService.open(this.SellHoldingModal, {
         centered: true,

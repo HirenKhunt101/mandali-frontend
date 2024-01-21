@@ -23,6 +23,7 @@ export class SuggestionComponent {
   storage = inject(Storage);
   UserData: any;
   AnalysisDetail: any;
+  uploading = false;
 
   constructor(
     private _ModalService: NgbModal,
@@ -55,6 +56,7 @@ export class SuggestionComponent {
   }
 
   async add_analysis(e: any, event: any) {
+    this.uploading = true;
     console.log(this.StockForm.value);
     event.preventDefault();
     const file = e.files[0];
@@ -62,11 +64,13 @@ export class SuggestionComponent {
     
     if(downloadURL) {
       this.StockForm.get('ImageUrl')?.setValue(downloadURL);
+      e.value = '';
       this._ADMS.createAnalysis(this.StockForm.value).subscribe(
         (data: any) => {
           console.log(data);
-          this.openErrorMsg('Analysis uploaded successfully');
           this.ngOnInit();
+          this.uploading = false;
+          this.openErrorMsg('Analysis uploaded successfully');
         },
         (e) => {
           console.log(e);
@@ -113,6 +117,7 @@ export class SuggestionComponent {
         return getDownloadURL(uploadTask.snapshot.ref);
     } else {
       this.openErrorMsg('Please upload valid image');
+      this.uploading = false;
     }
     return;
   }

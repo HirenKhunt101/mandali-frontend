@@ -23,7 +23,7 @@
                 }"
                 style="font-weight: 600"
               >
-                {{ td.profitLoss }}
+                {{ td.profitLoss | number : "1.0-2" }}
               </td>
               <td>{{ td.Date | date : "dd-MM-yyyy, hh:mm a" }}</td>
             </tr>
