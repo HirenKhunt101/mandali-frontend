@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   // url: 'http://localhost:4200/',
-  url: 'https://mandali-frontend-bbtdtk68y-hirenkhunt101.vercel.app/',
+  // url: 'https://mandali-frontend-bbtdtk68y-hirenkhunt101.vercel.app/',
+  url: "https://mandali-frontend.vercel.app/",
   backendurl: 'https://mandali-backend.vercel.app/mandali/',
   DECRYPT: "put32charactershereeeeeeeeeeeee!",
   firebaseConfig: {
