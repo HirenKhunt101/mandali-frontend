@@ -20,22 +20,23 @@ export class InstallmentComponent {
 
   InstallmentForm !: FormGroup;
   PendingRequest !: any[];
+  PendingInstallment !: any[];
   InstallmentDetails !: any[];
   UserType = 'admin';
   UserData: any;
   months = [
-    { name: 'January', value: '01' },
-    { name: 'February', value: '02' },
-    { name: 'March', value: '03' },
-    { name: 'April', value: '04' },
-    { name: 'May', value: '05' },
-    { name: 'June', value: '06' },
-    { name: 'July', value: '07' },
-    { name: 'August', value: '08' },
-    { name: 'September', value: '09' },
-    { name: 'October', value: '10' },
-    { name: 'November', value: '11' },
-    { name: 'December', value: '12' },
+    { name: 'January', value: 0 },
+    { name: 'February', value: 1 },
+    { name: 'March', value: 2 },
+    { name: 'April', value: 3 },
+    { name: 'May', value: 4 },
+    { name: 'June', value: 5 },
+    { name: 'July', value: 6 },
+    { name: 'August', value: 7 },
+    { name: 'September', value: 8 },
+    { name: 'October', value: 9 },
+    { name: 'November', value: 10 },
+    { name: 'December', value: 11 },
   ];
   currentYear = new Date().getFullYear();
   years = Array.from({ length: 21 }, (_, index) => (this.currentYear - 10) + index);
@@ -47,12 +48,13 @@ export class InstallmentComponent {
   }
 
   ngOnInit() {  
+    let now = new Date();
     this.UserData = new UserData().getData('userdata');
     this.UserType = this.UserData.user.UserType;
     this.InstallmentForm = new FormGroup({
-      Month: new FormControl('', [Validators.required]),
-      Year: new FormControl('', [Validators.required]),
-      Amount: new FormControl('', [Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)]),
+      Month: new FormControl(now.getMonth(), [Validators.required]),
+      Year: new FormControl(now.getFullYear(), [Validators.required]),
+      Amount: new FormControl(0, [Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)]),
       MandaliId: new FormControl(this.UserData.user.MandaliId),
       UserId: new FormControl(this.UserData.user.UserId),
       UserType: new FormControl(this.UserType),
@@ -66,9 +68,20 @@ export class InstallmentComponent {
       UserType: this.UserType,
     }).subscribe(
       (data: any) => {
+        this.InstallmentDetails = data.data.monthly_installment;
+        console.log(this.InstallmentDetails);    
+      },
+      (e) => {
+        console.log(e);
+      }
+    );
+
+    this._ADMS.readRemainingInstallment({
+      MandaliId: this.UserData.user.MandaliId,
+    }).subscribe(
+      (data: any) => {
         console.log(data);    
-        this.InstallmentDetails = data.data.Installment;
-        this.PendingRequest = data.data.pending_installment;
+        this.PendingInstallment = data.data.pending_installment;
       },
       (e) => {
         console.log(e);
@@ -118,11 +131,11 @@ export class InstallmentComponent {
     );
   }
 
-  approveDeleteRequest(ID: any, active: any) {
+  approveDeleteRequest(approveData: any) {
     // this.InstallmentForm.get('Approved')?.setValue(Active);
+    
     this._ADMS.approveDeletePendingRequest({
-      PendingInstallmentId: ID,
-      Active: active,
+      data: approveData,
       MandaliId: this.UserData.user.MandaliId,
       UserId: this.UserData.user.UserId
     }).subscribe(

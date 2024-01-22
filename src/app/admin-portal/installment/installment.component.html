@@ -55,47 +55,56 @@
 </div>
 
 <!-- <div *ngIf="UserType == 'Admin'"> -->
+
 <div>
   <div class="pendingdiv">
-    <h4>Pending Request</h4>
-    <div class="all-request" style="overflow-x: auto">
-      <table class="table-sm table-borderless request_table">
+    <h4>Pending Installment</h4>
+    <div class="all-stock" style="overflow-x: auto">
+      <table class="table-sm table-borderless pending_table">
         <thead>
           <th>No.</th>
           <th>Name</th>
-          <th>Date</th>
+          <th>Month</th>
+          <th>Year</th>
           <th>Amount</th>
           <th>Action</th>
         </thead>
         <tbody>
-          <tr *ngFor="let pr of PendingRequest; let i = index">
+          <tr *ngFor="let pr of PendingInstallment; let i = index">
             <td>{{ i + 1 }}</td>
             <td>{{ pr.Member_Name }}</td>
-            <td>{{ pr.Date }}</td>
+            <td>{{ months[pr.Month].name }}</td>
+            <td>{{ pr.Year }}</td>
             <td>{{ pr.Amount }}</td>
+            <td
+              style="cursor: pointer; color: #0aaa04"
+              (click)="approveDeleteRequest(pr)"
+            >
+              Approve
+            </td>
             <td>
-              <div *ngIf="UserType == 'admin'" class="d-flex mt-2">
+              <!-- <div *ngIf="UserType == 'admin'" class="d-flex mt-2">
                 <p
-                  style="cursor: pointer; color: yellowgreen"
+                  style="cursor: pointer; color: #0aaa04"
                   (click)="approveDeleteRequest(pr._id, true)"
                 >
                   Approve
-                </p>
-                <p
+                </p> -->
+              <!-- <p
                   style="margin-left: 5px; cursor: pointer; color: brown"
                   (click)="approveDeleteRequest(pr._id, false)"
                 >
                   Delete
-                </p>
-              </div>
-              <div *ngIf="UserType == 'member'" class="d-flex mt-2">
+                </p> -->
+              <!-- </div> -->
+              <!-- <div *ngIf="UserType == 'member'" class="d-flex mt-2">
                 <p
                   style="cursor: pointer; color: brown"
                   (click)="approveDeleteRequest(pr._id, false)"
                 >
                   Withdraw
                 </p>
-              </div>
+              </div> -->
             </td>
           </tr>
         </tbody>
@@ -111,18 +120,20 @@
       <table class="table-sm table-borderless installment_table">
         <thead>
           <th>No.</th>
-          <th>Name</th>
-          <th>Date</th>
-          <th>Type</th>
-          <th>Amount</th>
+          <th>Month</th>
+          <th>Year</th>
+          <th>Total</th>
+          <th>Collected</th>
+          <th>Remaining</th>
         </thead>
         <tbody>
           <tr *ngFor="let td of InstallmentDetails; let i = index">
             <td>{{ i + 1 }}</td>
-            <td>{{ td.Member_Name }}</td>
-            <td>{{ td.Date }}</td>
-            <td>{{ td.Type }}</td>
-            <td>{{ td.Amount }}</td>
+            <td>{{ months[td.Month].name }}</td>
+            <td>{{ td.Year }}</td>
+            <td>{{ td.Total }}</td>
+            <td>{{ td.Collected }}</td>
+            <td>{{ td.Remaining }}</td>
           </tr>
         </tbody>
       </table>
@@ -153,8 +164,8 @@
             <input
               #a
               type="text"
-              formControlName="Month"
               class="form-control field"
+              value="{{ months[InstallmentForm.controls['Month'].value].name }}"
               readonly
             />
           </div>

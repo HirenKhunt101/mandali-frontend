@@ -49,6 +49,12 @@ export class AdminModuleService {
       .post(this.BaseURL + 'installment/read_installment', data, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
+  
+  readRemainingInstallment(data: any) {
+    return this._http
+      .post(this.BaseURL + 'installment/read_remaining_installment', data, this.httpOptions)
+      .pipe(catchError(this.handleError));
+  }
 
   approveDeletePendingRequest(data: any) {
     return this._http
