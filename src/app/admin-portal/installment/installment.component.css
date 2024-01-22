@@ -9,19 +9,68 @@
 .pendingdiv {
     margin-top: 30px;
     margin-left: 20px;
+    width: 100%;
 }
 
 .installmentdiv {
-  margin-top: 30px;
+  margin-top: 50px;
   margin-left: 20px;
+  width: 100%;
 }
   
-.request_table {
-  width: 50%;
+.pending_table {
+  width: 100%;
+}  
+.installment_table {
+  width: 100%;
 }
 
-.installment_table {
-  width: 65%;
+.pending_table th {
+  background: #ffffff;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #1d366d;
+  border-bottom: 4px solid rgba(0, 0, 0, 0.1);
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.pending_table td {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  border-top: 0.1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 3px solid rgba(4, 0, 0, 0.1);
+  padding-top: 10px; 
+  padding-bottom: 10px;
+  background: #ffffff;
+  letter-spacing: 1px;
+}
+
+.installment_table th {
+  background: #ffffff;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #1d366d;
+  border-bottom: 4px solid rgba(0, 0, 0, 0.1);
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.installment_table td {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  border-top: 0.1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 3px solid rgba(4, 0, 0, 0.1);
+  padding-top: 10px; 
+  padding-bottom: 10px;
+  background: #ffffff;
+  letter-spacing: 1px;
 }
 
 #month {
@@ -31,6 +80,7 @@
 #year {
   min-width: 60px;
 }
+
 
 @media screen and (max-width: 715px) {
     .subdiv {
