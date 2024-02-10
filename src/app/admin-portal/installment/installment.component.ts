@@ -142,7 +142,7 @@ export class InstallmentComponent {
       UserId: this.UserData.user.UserId
     }).subscribe(
       (data: any) => {
-        console.log(data);
+        this._ModalService.dismissAll();
         this.openErrorMsg(data.statusMessage);
         this.ngOnInit();  
       },
