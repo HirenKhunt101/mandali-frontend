@@ -17,6 +17,7 @@ import { ModalContentComponent } from '../../modal-content/modal-content.compone
 })
 export class InstallmentComponent {
   @ViewChild('ConfirmationModal', { static: true }) ConfirmationModal !: ElementRef;
+  @ViewChild('ApprovalConfirmationModal', { static: true }) ApprovalConfirmationModal !: ElementRef;
 
   InstallmentForm !: FormGroup;
   PendingRequest !: any[];
@@ -40,6 +41,7 @@ export class InstallmentComponent {
   ];
   currentYear = new Date().getFullYear();
   years = Array.from({ length: 21 }, (_, index) => (this.currentYear - 10) + index);
+  CurrentRequest: any;
 
   constructor(
     private _ModalService: NgbModal,
@@ -152,7 +154,24 @@ export class InstallmentComponent {
   }
 
   openConfirmationModal() {
+    if(this.UserType != "admin") {
+      this.openErrorMsg("You don't have access to create installment. Please contact admin.");
+      return;
+    } 
     this._ModalService.open(this.ConfirmationModal, {
+      centered: true,
+      backdrop: 'static',
+      keyboard: false,
+    });
+  }
+
+  openApprovalConfirmationModal(approveData: any) {
+    if(this.UserType != "admin") {
+      this.openErrorMsg("You don't have access for approve request. Please contact admin.");
+      return;
+    } 
+    this.CurrentRequest = approveData;
+    this._ModalService.open(this.ApprovalConfirmationModal, {
       centered: true,
       backdrop: 'static',
       keyboard: false,
