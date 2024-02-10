@@ -78,7 +78,7 @@
             <td>{{ pr.Amount }}</td>
             <td
               style="cursor: pointer; color: #0aaa04"
-              (click)="approveDeleteRequest(pr)"
+              (click)="openApprovalConfirmationModal(pr)"
             >
               Approve
             </td>
@@ -232,6 +232,34 @@
       (click)="create_installment()"
     >
       Add
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #ApprovalConfirmationModal let-modal>
+  <div class="modal_title d-flex mx-2" style="margin-top: -1px">
+    <div class="pt-1 col d-flex justify-content-center">
+      <h5 class="confirm text-center my-4 camel-case">
+        Are you sure you want to approve the installment request of
+        {{ CurrentRequest.Member_Name }} for the amount of
+        {{ CurrentRequest.Amount }} ?
+      </h5>
+    </div>
+    <div class="mt-1 mr-2" style="column-width: 15px; cursor: pointer"></div>
+  </div>
+  <div class="d-flex justify-content-center pb-3">
+    <button
+      class="btn light_button button"
+      (click)="modal.close('Close click')"
+    >
+      Cancel
+    </button>
+    <button
+      class="btn btn-primary button ml-2"
+      [disabled]="!InstallmentForm.valid"
+      (click)="approveDeleteRequest(CurrentRequest)"
+    >
+      Confirm
     </button>
   </div>
 </ng-template>
